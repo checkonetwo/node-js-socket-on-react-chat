@@ -1,0 +1,22 @@
+{
+  "name": "node-websoket",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/checkonetwo/node-websocket.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/checkonetwo/node-websocket/issues"
+  },
+  "homepage": "https://github.com/checkonetwo/node-websocket#readme",
+  "dependencies": {
+    "socket.io": "^2.1.1"
+  }
+}
