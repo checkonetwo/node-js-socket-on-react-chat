@@ -1,7 +1,14 @@
 import React, { Component } from "react";
 import io from "socket.io-client";
+
+import Registration from "./components/Registration";
 import MessageForm from "./components/MessageForm";
 import Chat from "./components/Chat";
+
+import RootStyles from "./styles/root";
+import GlobalStyles from "./styles/global";
+
+import { AppContainer } from "./styles/App";
 
 const socket = io("http://localhost:8000");
 
@@ -9,8 +16,25 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      msgs: []
+      // user: {
+      //   isRegistered: false,
+      //   name: null
+      // },
+      user: {
+        isRegistered: true,
+        name: "🦊"
+      },
+      msgs: [
+        { name: "🦊", msg: "Hi, how are you?", ts: 154325811100 },
+        { name: "🦊", msg: "Hello, there!", ts: 154325810200 },
+        {
+          name: "🦊",
+          msg: "Thx, i'm fine! dakllksdlas dasldklaskdlas d dkasldkaslkda",
+          ts: 154325812400
+        }
+      ]
     };
+
     socket.on("new message", msg => {
       this.setState({
         msgs: [...this.state.msgs, msg]
@@ -18,29 +42,47 @@ class App extends Component {
     });
   }
 
-  componentDidMount() {}
-
   handleMessageSubmit = e => {
     e.preventDefault();
-    const name = e.target.name.value;
+    const { user } = this.state;
     const msg = e.target.message.value;
 
     const msgObj = {
-      name,
-      msg
+      name: user.name,
+      msg,
+      ts: Math.floor(Date.now())
     };
+    if (msg.length !== 0) {
+      socket.emit("message", msgObj);
+    }
+    e.target.message.value = "";
+  };
 
-    socket.emit("message", msgObj);
+  handleRegistration = name => {
+    this.setState({
+      user: {
+        isRegistered: true,
+        name
+      }
+    });
   };
 
   render() {
-    const { msgs } = this.state;
-    console.log(msgs);
+    const { msgs, user } = this.state;
+
     return (
-      <div className="App">
-        <MessageForm handleSubmit={this.handleMessageSubmit} />
-        <Chat messages={msgs} />
-      </div>
+      <React.Fragment>
+        <RootStyles />
+        <GlobalStyles />
+        {user.isRegistered ? (
+          <AppContainer>
+            <Chat messages={msgs} userData={user} />
+            <MessageForm handleSubmit={this.handleMessageSubmit} />
+          </AppContainer>
+        ) : (
+          <Registration handleRegistration={this.handleRegistration} />
+        )}
+      </React.Fragment>
     );
   }
 }

@@ -1,16 +1,44 @@
 import React, { PureComponent } from "react";
+import Moment from "react-moment";
+import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+
+import {
+  MessagesContainer,
+  Message,
+  MessageContent,
+  MessageName,
+  MessageText
+} from "./style";
 
 class Chat extends PureComponent {
   render() {
-    const { messages } = this.props;
+    const { messages, userData } = this.props;
     return (
-      <div>
-        {messages.map(m => (
-          <div>
-            <b>{m.name}</b>: <span>{m.msg}</span>
-          </div>
-        ))}
-      </div>
+      <MessagesContainer>
+        <ReactCSSTransitionGroup
+          transitionName="anim"
+          transitionAppear={false}
+          transitionEnterTimeout={700}
+          transitionEnter={true}
+          transitionLeave={false}
+        >
+          {messages
+            .sort((a, b) => b.ts - a.ts)
+            .map(m => (
+              <Message key={m.ts} isYourMessage={userData.name === m.name}>
+                <MessageName>
+                  <span>{m.name}</span>
+                </MessageName>
+                <MessageContent>
+                  <MessageText>{m.msg}</MessageText>
+                  <MessageText>
+                    <Moment fromNow>{m.ts}</Moment>
+                  </MessageText>
+                </MessageContent>
+              </Message>
+            ))}
+        </ReactCSSTransitionGroup>
+      </MessagesContainer>
     );
   }
 }

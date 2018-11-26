@@ -1,14 +1,22 @@
-import React, { Component } from "react";
+import React, { PureComponent } from "react";
 
-class MessageForm extends Component {
+import {
+  MessageFormContainer,
+  MessageRealForm,
+  TextInput,
+  SubmitInput
+} from "./style";
+
+class MessageForm extends PureComponent {
   render() {
     const { handleSubmit } = this.props;
     return (
-      <form onSubmit={handleSubmit}>
-        <input type="text" name="name" placeholder="Your Name" />
-        <input type="text" name="message" placeholder="Your Message" />
-        <input type="submit" value="submit" />
-      </form>
+      <MessageFormContainer>
+        <MessageRealForm onSubmit={handleSubmit}>
+          <TextInput type="text" name="message" placeholder="Message" />
+          <SubmitInput type="submit" value="submit" />
+        </MessageRealForm>
+      </MessageFormContainer>
     );
   }
 }
