@@ -67,10 +67,12 @@ a {
 
 .anim-enter {
   opacity: 0;
+  height: 0;
   transition: opacity 0.7s ease-in-out;
 }
  
 .anim-enter.anim-enter-active {
   opacity: 1;
+  height: auto;
 }
 `;

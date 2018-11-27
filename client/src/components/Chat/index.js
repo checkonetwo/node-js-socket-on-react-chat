@@ -5,6 +5,7 @@ import ReactCSSTransitionGroup from "react-addons-css-transition-group";
 import {
   MessagesContainer,
   Message,
+  JoinedMessage,
   MessageContent,
   MessageName,
   MessageText
@@ -24,19 +25,26 @@ class Chat extends PureComponent {
         >
           {messages
             .sort((a, b) => b.ts - a.ts)
-            .map(m => (
-              <Message key={m.ts} isYourMessage={userData.name === m.name}>
-                <MessageName>
-                  <span>{m.name}</span>
-                </MessageName>
-                <MessageContent>
-                  <MessageText>{m.msg}</MessageText>
-                  <MessageText>
-                    <Moment fromNow>{m.ts}</Moment>
-                  </MessageText>
-                </MessageContent>
-              </Message>
-            ))}
+            .map(m =>
+              m.type === "joined" ? (
+                <JoinedMessage key={m.ts}>
+                  {m.name} &nbsp;has joined&nbsp;
+                  <Moment fromNow>{m.ts}</Moment>
+                </JoinedMessage>
+              ) : (
+                <Message key={m.ts} isYourMessage={userData.name === m.name}>
+                  <MessageName>
+                    <span>{m.name}</span>
+                  </MessageName>
+                  <MessageContent isYourMessage={userData.name === m.name}>
+                    <MessageText>{m.msg}</MessageText>
+                    <MessageText>
+                      <Moment fromNow>{m.ts}</Moment>
+                    </MessageText>
+                  </MessageContent>
+                </Message>
+              )
+            )}
         </ReactCSSTransitionGroup>
       </MessagesContainer>
     );

@@ -10,32 +10,31 @@ import GlobalStyles from "./styles/global";
 
 import { AppContainer } from "./styles/App";
 
-const socket = io("http://localhost:8000");
-
 class App extends Component {
+  state = {
+    user: {
+      isRegistered: false,
+      name: null
+    },
+    // user: {
+    //   isRegistered: true,
+    //   name: "🦊"
+    // },
+    msgs: [
+      { name: "🦊", msg: "Welcome to chat!", ts: 154325811100 },
+      { name: "🦊", msg: "Hello, there!", ts: 154325810200 },
+      {
+        name: "🦊",
+        msg: "Thx, i'm fine! dakllksdlas dasldklaskdlas d dkasldkaslkda",
+        ts: 154325812400
+      }
+    ]
+  };
   constructor(props) {
     super(props);
-    this.state = {
-      // user: {
-      //   isRegistered: false,
-      //   name: null
-      // },
-      user: {
-        isRegistered: true,
-        name: "🦊"
-      },
-      msgs: [
-        { name: "🦊", msg: "Hi, how are you?", ts: 154325811100 },
-        { name: "🦊", msg: "Hello, there!", ts: 154325810200 },
-        {
-          name: "🦊",
-          msg: "Thx, i'm fine! dakllksdlas dasldklaskdlas d dkasldkaslkda",
-          ts: 154325812400
-        }
-      ]
-    };
+    this.socket = io("http://10.10.2.237:8000");
 
-    socket.on("new message", msg => {
+    this.socket.on("new message", msg => {
       this.setState({
         msgs: [...this.state.msgs, msg]
       });
@@ -48,17 +47,20 @@ class App extends Component {
     const msg = e.target.message.value;
 
     const msgObj = {
+      type: "message",
       name: user.name,
       msg,
       ts: Math.floor(Date.now())
     };
     if (msg.length !== 0) {
-      socket.emit("message", msgObj);
+      this.socket.emit("message", msgObj);
     }
     e.target.message.value = "";
   };
 
   handleRegistration = name => {
+    this.socket.emit("join", name);
+
     this.setState({
       user: {
         isRegistered: true,
