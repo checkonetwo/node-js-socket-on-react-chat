@@ -28,6 +28,7 @@ export const Name = styled.div`
   cursor: pointer;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px -5px rgba(10, 16, 34, 0.2);
+    transition: box-shadow 150ms ease;
   }
 `;

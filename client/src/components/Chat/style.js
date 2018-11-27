@@ -1,15 +1,16 @@
 import styled from "styled-components";
 
 export const MessagesContainer = styled.div`
-  padding: 36px 18px 36px 18px;
+  padding: 18px;
+  min-height: 600px;
+  position: relative;
 `;
 
 export const Message = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: ${p => (p.isYourMessage ? "row-reverse" : "row")};
-  margin: ${p =>
-    p.isYourMessage ? "14px 6px 14px 24px" : "14px 24px 14px 6px"};
+  margin: ${p => (p.isYourMessage ? "8px 6px 8px 24px" : "8px 24px 8px 6px")};
 `;
 
 export const JoinedMessage = styled.div`
@@ -20,17 +21,20 @@ export const JoinedMessage = styled.div`
 
 export const MessageContent = styled.div`
   padding: 10px 14px 8px 14px;
+  margin-top: 4px;
+  margin-bottom: 4px;
   font-size: 1.4rem;
-  border-radius: 6px;
+  border-radius: 4px;
   display: flex;
   flex-wrap: wrap;
   width: 100%;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
   border: 1px solid
     ${p => (p.isYourMessage ? "var(--blue)" : "var(--border-color)")};
   background-color: ${p =>
-    p.isYourMessage ? "var(--blue)" : " rgba(0, 0, 0, 0.04)"};
+    p.isYourMessage ? "var(--blue)" : "var(--bg-color)"};
   color: ${p => (p.isYourMessage ? "#fff" : "var(--text-color)")};
+  box-shadow: 0 1px 0 0
+    ${p => (p.isYourMessage ? "rgba(0,0,0,0.8)" : "rgba(10, 16, 34, 0.15)")};
 `;
 
 export const MessageName = styled.div`

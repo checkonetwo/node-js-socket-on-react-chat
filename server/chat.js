@@ -1,27 +1,31 @@
 var server = require("http").createServer();
 var io = require("socket.io")(server);
+var usersOnline = [];
 
 io.on("connection", socket => {
-  console.log("user connected");
-
-  socket.on("join", name => {
-    console.log(name + " joined");
+  socket.on("join", user => {
+    console.log(user + " joined");
 
     const msg = {
       type: "joined",
-      name,
+      name: user,
       ts: Math.floor(Date.now())
     };
 
+    usersOnline.push(user);
+
     io.emit("new message", msg);
+    io.emit("users online", usersOnline);
   });
 
   socket.on("message", msg => {
     io.emit("new message", msg);
   });
 
-  socket.on("disconnect", function() {
-    console.log("user disconnected");
+  socket.on("disconnect", user => {
+    usersOnline.splice(usersOnline.indexOf(user), 1);
+
+    io.emit("users online", usersOnline);
   });
 });
 

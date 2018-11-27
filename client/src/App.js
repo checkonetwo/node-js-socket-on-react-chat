@@ -4,11 +4,14 @@ import io from "socket.io-client";
 import Registration from "./components/Registration";
 import MessageForm from "./components/MessageForm";
 import Chat from "./components/Chat";
+import UsersOnline from "./components/UsersOnline";
+
+// Styles
 
 import RootStyles from "./styles/root";
 import GlobalStyles from "./styles/global";
 
-import { AppContainer } from "./styles/App";
+import { AppContainer, ChatWindow } from "./styles/App";
 
 class App extends Component {
   state = {
@@ -16,10 +19,12 @@ class App extends Component {
       isRegistered: false,
       name: null
     },
+    usersOnline: [],
     // user: {
     //   isRegistered: true,
     //   name: "🦊"
     // },
+    // usersOnline: ["🦊", "🦊"],
     msgs: [
       { name: "🦊", msg: "Welcome to chat!", ts: 154325811100 },
       { name: "🦊", msg: "Hello, there!", ts: 154325810200 },
@@ -30,6 +35,7 @@ class App extends Component {
       }
     ]
   };
+
   constructor(props) {
     super(props);
     this.socket = io("http://10.10.2.237:8000");
@@ -37,6 +43,17 @@ class App extends Component {
     this.socket.on("new message", msg => {
       this.setState({
         msgs: [...this.state.msgs, msg]
+      });
+    });
+
+    this.socket.on("disconnect", () => {
+      this.socket.emit("disconnect", this.state.user.name);
+    });
+
+    this.socket.on("users online", users => {
+      console.log(users, " online");
+      this.setState({
+        usersOnline: users
       });
     });
   }
@@ -70,7 +87,7 @@ class App extends Component {
   };
 
   render() {
-    const { msgs, user } = this.state;
+    const { msgs, user, usersOnline } = this.state;
 
     return (
       <React.Fragment>
@@ -78,8 +95,14 @@ class App extends Component {
         <GlobalStyles />
         {user.isRegistered ? (
           <AppContainer>
-            <Chat messages={msgs} userData={user} />
-            <MessageForm handleSubmit={this.handleMessageSubmit} />
+            <UsersOnline users={usersOnline} />
+            <ChatWindow>
+              <Chat messages={msgs} userData={user} />
+              <MessageForm
+                handleSubmit={this.handleMessageSubmit}
+                userData={user}
+              />
+            </ChatWindow>
           </AppContainer>
         ) : (
           <Registration handleRegistration={this.handleRegistration} />
