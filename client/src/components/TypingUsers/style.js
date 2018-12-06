@@ -1,15 +1,13 @@
 import styled from "styled-components";
 
 export const UsersContainer = styled.div`
-  position: absolute;
-  left: -58px;
   font-size: 1.4rem;
   line-height: 1em;
-  width: 88px;
-  top: 32px;
+  width: 100%;
   text-align: center;
   display: flex;
   flex-wrap: wrap;
+  display: none;
 `;
 
 export const UsersTitle = styled.div`

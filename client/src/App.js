@@ -5,6 +5,7 @@ import Registration from "./components/Registration";
 import MessageForm from "./components/MessageForm";
 import Chat from "./components/Chat";
 import UsersOnline from "./components/UsersOnline";
+import TypingUsers from "./components/TypingUsers";
 
 // Styles
 
@@ -17,22 +18,27 @@ class App extends Component {
   state = {
     user: {
       isRegistered: false,
-      name: null
+      name: null,
+      id: null
     },
-    usersOnline: [],
+    // usersOnline: [],
     // user: {
     //   isRegistered: true,
     //   name: "🦊"
     // },
-    // usersOnline: ["🦊", "🦊"],
+    usersOnline: [
+      // { name: "🦊", isTyping: false },
+      // { name: "😃", isTyping: false },
+      // { name: "💀", isTyping: false }
+    ],
     msgs: [
-      { name: "🦊", msg: "Welcome to chat!", ts: 154325811100 },
-      { name: "🦊", msg: "Hello, there!", ts: 154325810200 },
-      {
-        name: "🦊",
-        msg: "Thx, i'm fine! dakllksdlas dasldklaskdlas d dkasldkaslkda",
-        ts: 154325812400
-      }
+      // { name: "🦊", msg: "Welcome to chat!", ts: 154325811100 },
+      // { name: "🦊", msg: "Hello, there!", ts: 154325810200 },
+      // {
+      //   name: "🦊",
+      //   msg: "Thx, i'm fine! dakllksdlas dasldklaskdlas d dkasldkaslkda",
+      //   ts: 154325812400
+      // }
     ]
   };
 
@@ -46,12 +52,18 @@ class App extends Component {
       });
     });
 
+    this.socket.on("user writing", msg => {
+      this.setState({
+        msgs: [...this.state.msgs, msg]
+      });
+    });
+
     this.socket.on("disconnect", () => {
       this.socket.emit("disconnect", this.state.user.name);
     });
 
     this.socket.on("users online", users => {
-      console.log(users, " online");
+      console.log(users, "online");
       this.setState({
         usersOnline: users
       });
@@ -76,16 +88,27 @@ class App extends Component {
   };
 
   handleRegistration = name => {
-    this.socket.emit("join", name);
+    const serverCard = {
+      name,
+      registered: Math.floor(Date.now())
+    };
+
+    this.socket.emit("join", serverCard);
 
     this.setState({
       user: {
-        isRegistered: true,
-        name
+        name,
+        isRegistered: true
       }
     });
   };
 
+  handleKeydown = () => {
+    const { user } = this.state;
+    this.socket.emit("writing message", user.name);
+  };
+
+  componentWillUnmount() {}
   render() {
     const { msgs, user, usersOnline } = this.state;
 
@@ -97,9 +120,11 @@ class App extends Component {
           <AppContainer>
             <UsersOnline users={usersOnline} />
             <ChatWindow>
+              <TypingUsers users={usersOnline} />
               <Chat messages={msgs} userData={user} />
               <MessageForm
                 handleSubmit={this.handleMessageSubmit}
+                handleKeydown={this.handleKeydown}
                 userData={user}
               />
             </ChatWindow>

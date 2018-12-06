@@ -65,14 +65,53 @@ a {
   text-decoration: none; 
 }
 
-.anim-enter {
-  opacity: 0;
-  height: 0;
-  transition: opacity 0.7s ease-in-out;
+@keyframes bounceInUp {
+  from,
+  60%,
+  75%,
+  90%,
+  to {
+    -webkit-animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+    animation-timing-function: cubic-bezier(0.215, 0.61, 0.355, 1);
+  }
+
+  from {
+    opacity: 0;
+    -webkit-transform: translate3d(0, 3000px, 0);
+    transform: translate3d(0, 3000px, 0);
+  }
+
+  60% {
+    opacity: 1;
+    -webkit-transform: translate3d(0, -20px, 0);
+    transform: translate3d(0, -20px, 0);
+  }
+
+  75% {
+    -webkit-transform: translate3d(0, 10px, 0);
+    transform: translate3d(0, 10px, 0);
+  }
+
+  90% {
+    -webkit-transform: translate3d(0, -5px, 0);
+    transform: translate3d(0, -5px, 0);
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
 }
- 
-.anim-enter.anim-enter-active {
-  opacity: 1;
-  height: auto;
-}
+
+  .anim-enter {
+    animation-name: bounceInUp;
+    animation-duration: 0.7s;
+    animation-timing-function: ease-in-out;
+    /* transition: height 0.2s ease-out; */
+    /* min-height: 0; */
+  }
+  
+  .anim-enter.anim-enter-active {
+    /* min-height: 100%; */
+  }
 `;

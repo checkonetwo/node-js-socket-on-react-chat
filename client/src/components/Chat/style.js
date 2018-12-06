@@ -4,13 +4,38 @@ export const MessagesContainer = styled.div`
   padding: 18px;
   min-height: 600px;
   position: relative;
+
+  &:before {
+    content: "";
+    display: block;
+    position: absolute;
+    top: -140px;
+    left: 0;
+    width: 100%;
+    height: 200px;
+    background-image: linear-gradient(
+      to top,
+      rgba(0, 0, 0, 0),
+      rgba(0, 0, 0, 0.2)
+    );
+    z-index: 100;
+  }
+
+  & > span {
+    position: absolute;
+    left: 0;
+    bottom: 80px;
+    overflow: hidden;
+    width: 100%;
+    /* fix here */
+  }
 `;
 
 export const Message = styled.div`
   overflow: hidden;
   display: flex;
   flex-direction: ${p => (p.isYourMessage ? "row-reverse" : "row")};
-  margin: ${p => (p.isYourMessage ? "8px 6px 8px 24px" : "8px 24px 8px 6px")};
+  margin: ${p => (p.isYourMessage ? "8px 6px 8px 36px" : "8px 36px 8px 6px")};
 `;
 
 export const JoinedMessage = styled.div`

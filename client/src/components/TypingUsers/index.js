@@ -2,7 +2,7 @@ import React, { PureComponent } from "react";
 
 import { UsersContainer, User } from "./style";
 
-class UsersOnline extends PureComponent {
+class TypingUsers extends PureComponent {
   render() {
     const { users } = this.props;
     return (
@@ -10,6 +10,7 @@ class UsersOnline extends PureComponent {
         {Object.keys(users).map(id => (
           <User key={id}>
             <span>{users[id].name}</span>
+            <span>{users[id].isTyping ? "typing" : false}</span>
           </User>
         ))}
       </UsersContainer>
@@ -17,4 +18,4 @@ class UsersOnline extends PureComponent {
   }
 }
 
-export default UsersOnline;
+export default TypingUsers;

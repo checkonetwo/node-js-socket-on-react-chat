@@ -1,34 +1,66 @@
 var server = require("http").createServer();
 var io = require("socket.io")(server);
-var usersOnline = [];
+
+var usersDatabase = {
+  accounts: {},
+  online: {}
+};
 
 io.on("connection", socket => {
-  socket.on("join", user => {
-    console.log(user + " joined");
+  const id = socket.id;
 
-    const msg = {
+  socket.on("join", baseCard => {
+    const JoinMessage = {
       type: "joined",
-      name: user,
-      ts: Math.floor(Date.now())
+      msg: "has joined",
+      name: baseCard.name,
+      ts: baseCard.registered
     };
 
-    usersOnline.push(user);
+    usersDatabase.accounts[id] = baseCard;
 
-    io.emit("new message", msg);
-    io.emit("users online", usersOnline);
+    const publicCard = {
+      name: baseCard.name,
+      isTyping: false
+    };
+
+    usersDatabase.online[id] = publicCard;
+
+    io.emit("new message", JoinMessage);
+    io.emit("users online", usersDatabase.online);
   });
 
   socket.on("message", msg => {
     io.emit("new message", msg);
   });
 
-  socket.on("disconnect", user => {
-    usersOnline.splice(usersOnline.indexOf(user), 1);
+  // socket.on("writing message", name => {
+  //   usersDatabase.push({
+  //     [name]: {
+  //       name,
+  //       isTyping: true
+  //     }
+  //   });
 
-    io.emit("users online", usersOnline);
+  // io.emit("user writing", msg);
+  // });
+
+  socket.on("disconnect", () => {
+    const leftMessage = {
+      type: "left",
+      msg: "has disconnected",
+      name: usersDatabase.accounts[id].name,
+      ts: Math.floor(Date.now())
+    };
+    console.log(usersDatabase.accounts);
+    delete usersDatabase.accounts[id];
+    delete usersDatabase.online[id];
+
+    io.emit("users online", usersDatabase.online);
+    io.emit("new message", leftMessage);
   });
 });
 
-server.listen(8000, function() {
+server.listen(8000, () => {
   console.log("listening on *:8000");
 });
